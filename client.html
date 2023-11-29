@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <ul id="message-list">
+        <!-- messages -->
+    </ul>
+    <input type="text" name="message" id="message-text">
+    <button onclick="sendMessage()">Click</button>
+</body>
+<script>
+    let name = prompt("What's your name?")
+    let socket = new WebSocket('ws://localhost:8080');
+    socket.onopen = () => {
+        console.log('connection opened');
+    };
+    socket.onmessage = (event) => {
+        let data = JSON.parse(event.data);
+        let messageList = document.getElementById('message-list');
+
+        let li = document.createElement('li');
+        li.textContent = `[${data.author}] ${data.message}`;
+
+        messageList.appendChild(li)
+        console.log(`${data.author}: ${data.message}`);
+    };
+
+    const sendMessage = () => {
+        let textBox = document.getElementById('message-text')
+        socket.send(JSON.stringify({
+            author: name,
+            message: textBox.value.trim()
+        }));
+        textBox.value = '';
+    };
+</script>
+</html>
