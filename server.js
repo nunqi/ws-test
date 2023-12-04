@@ -12,7 +12,7 @@ wss.on('connection', (ws) => {
         console.log(`${data.author}: ${data.message}`);
         wss.clients.forEach((client) => {
             if (client.readyState === WebSocket.OPEN) {
-                ws.send(rawData.toString());
+                client.send(rawData.toString());
             }
         });
     });
